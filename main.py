@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     QMessageBox,
+    qApp,
 )
 from PyQt5.QtGui import (
     QStandardItemModel,
@@ -16,21 +17,21 @@ import sqlite3
 import shutil
 
 
-class NoteListModel(QStandardItemModel):
+class PageListModel(QStandardItemModel):
     def __init__(self):
         super().__init__()
 
     def parseText(self, text):
         cols = text.split(',')
         if len(cols) != 2:
-            return None
+            raise ValueError('invalid text format. can not split by comma')
         return { 'id': cols[0], 'created': cols[1] }
 
     def parseRow(self, dict_row):
         return '{id}, {created}'.format(id=dict_row['id'], created=dict_row['created'])
 
 
-class NoteBookModel:
+class NoteModel:
     def __init__(self, remove_settings=False):
         self.remove_settings = remove_settings
         self.initEnv()
@@ -56,7 +57,7 @@ class NoteBookModel:
 
         cursor = self.dbConn.cursor()
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS note (
+            CREATE TABLE IF NOT EXISTS page (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 created DATETIME DEFAULT CURRENT_TIMESTAMP,
                 content TEXT NOT NULL DEFAULT "内容なし"
@@ -65,19 +66,19 @@ class NoteBookModel:
         self.dbConn.commit()
 
 
-class NoteModel:
+class PageModel:
     def __init__(self, dbConn):
         self.dbConn = dbConn
 
     def create(self):
         cursor = self.dbConn.cursor()
         cursor.execute('''
-            INSERT INTO note DEFAULT VALUES;
+            INSERT INTO page DEFAULT VALUES;
         ''')
         self.dbConn.commit()
 
         cursor.execute('''
-            SELECT * FROM note WHERE id = ?
+            SELECT * FROM page WHERE id = ?
         ''', (cursor.lastrowid, ))
         row = cursor.fetchone()
         return row
@@ -85,12 +86,12 @@ class NoteModel:
     def deleteById(self, rid):
         cursor = self.dbConn.cursor()
         cursor.execute('''
-            SELECT * FROM note WHERE id = ?
+            SELECT * FROM page WHERE id = ?
         ''', (rid, ))
         row = cursor.fetchone()
 
         cursor.execute('''
-            DELETE FROM note WHERE id = ?
+            DELETE FROM page WHERE id = ?
         ''', (rid, ))
         self.dbConn.commit()
 
@@ -99,7 +100,7 @@ class NoteModel:
     def selectById(self, rid):
         cursor = self.dbConn.cursor()
         cursor.execute('''
-            SELECT * FROM note WHERE id = ?
+            SELECT * FROM page WHERE id = ?
         ''', (rid, ))
         row = cursor.fetchone()
         return row
@@ -107,25 +108,25 @@ class NoteModel:
     def update(self, id, content):
         cursor = self.dbConn.cursor()
         cursor.execute('''
-            UPDATE note SET content = ? WHERE id = ?;
+            UPDATE page SET content = ? WHERE id = ?;
         ''', (content, id, ))
         self.dbConn.commit()
 
     def selectAll(self):
         cursor = self.dbConn.cursor()
         cursor.execute('''
-            SELECT * FROM note;
+            SELECT * FROM page;
         ''')
         return cursor.fetchall()
 
 
-class NoteBookView(QMainWindow):
-    def __init__(self, noteBookModel, debug=False):
+class NoteView(QMainWindow):
+    def __init__(self, noteModel, debug=False):
         super().__init__()
         uic.loadUi('main.ui', self)
         self.debug = debug
-        self.noteModel = NoteModel(noteBookModel.dbConn)
-        self.noteListModel = NoteListModel()
+        self.pageModel = PageModel(noteModel.dbConn)
+        self.pageListModel = PageListModel()
         self.load()
         self.smsg("I'm ready")
 
@@ -137,26 +138,26 @@ class NoteBookView(QMainWindow):
             print(*args, **kwargs)
 
     def load(self):
-        rows = self.noteModel.selectAll()
+        rows = self.pageModel.selectAll()
         rows = sorted(rows, key=lambda row: -int(row['id']))
         for row in rows:
-            text = self.noteListModel.parseRow(row)
+            text = self.pageListModel.parseRow(row)
             item = QStandardItem(text)
-            self.noteListModel.appendRow(item)
+            self.pageListModel.appendRow(item)
         self.smsg('load complete')
 
     def new(self):
-        row = self.noteModel.create()
-        text = self.noteListModel.parseRow(row)
+        row = self.pageModel.create()
+        text = self.pageListModel.parseRow(row)
         item = QStandardItem(text)
-        self.noteListModel.insertRow(0, item)
+        self.pageListModel.insertRow(0, item)
         self.textEdit.setText(row['content'])
         self.titleEdit.setText(text)
         self.showDebug('inserted', dict(row))
         self.smsg('created new note')
 
     def delete(self):
-        selectionModel = self.noteList.selectionModel()
+        selectionModel = self.pageList.selectionModel()
         indexes = selectionModel.selectedIndexes()
         if not len(indexes):
             QMessageBox.about(self, '日記が選択されていません', '削除する日記を選択して下さい。')
@@ -167,58 +168,70 @@ class NoteBookView(QMainWindow):
             return
 
         for index in indexes:
-            text = self.noteListModel.itemFromIndex(index).text()
-            row = self.noteListModel.parseText(text)
+            text = self.pageListModel.itemFromIndex(index).text()
+            row = self.pageListModel.parseText(text)
             if row is None:
                 continue
-            row = self.noteModel.deleteById(row['id'])
+            row = self.pageModel.deleteById(row['id'])
             self.showDebug('deleted', dict(row))
-            self.smsg('deleted note by id "%d"' % (row['id'], ))
+            self.smsg('deleted page by id "%d"' % (row['id'], ))
 
         for index in indexes:
-            self.noteListModel.removeRow(index.row())
+            self.pageListModel.removeRow(index.row())
 
     def save(self):
         selectedTitle = self.titleEdit.text()
-        row = self.noteListModel.parseText(selectedTitle)
+        row = self.pageListModel.parseText(selectedTitle)
         if row is None:
             return
 
         row['content'] = self.textEdit.toPlainText()
-        self.noteModel.update(id=row['id'], content=row['content'])
+        self.pageModel.update(id=row['id'], content=row['content'])
         self.showDebug('updated', row)
-        self.smsg('updated note by id "%s"' % (row['id'], ))
+        self.smsg('updated page by id "%s"' % (row['id'], ))
         QMessageBox.about(self, '保存結果', '日記の保存に成功しました。')
 
     def changed(self, selected, deselected):
         for index in selected.indexes():
-            text = self.noteListModel.itemFromIndex(index).text()
-            row = self.noteListModel.parseText(text)
+            text = self.pageListModel.itemFromIndex(index).text()
+            row = self.pageListModel.parseText(text)
             if row is None:
                 continue
-            row = self.noteModel.selectById(row['id'])
+            row = self.pageModel.selectById(row['id'])
+            if row is None:
+                continue
             self.textEdit.setText(row['content'])
             self.titleEdit.setText(text)
-            self.smsg('selected note by id "%d"' % (row['id'], ))
+            self.smsg('selected page by id "%d"' % (row['id'], ))
 
 
-class NoteBookController:
+class NoteController:
     def __init__(self):
-        self.noteBookModel = NoteBookModel()
-        self.noteBook = NoteBookView(self.noteBookModel)
-        self.noteBook.newButton.clicked.connect(self.noteBook.new)
-        self.noteBook.deleteButton.clicked.connect(self.noteBook.delete)
-        self.noteBook.saveButton.clicked.connect(self.noteBook.save)
-        self.noteBook.noteList.setModel(self.noteBook.noteListModel)
-        self.noteBook.noteList.selectionModel().selectionChanged.connect(self.noteBook.changed)
+        self.noteModel = NoteModel(remove_settings=False)
+        self.note = NoteView(self.noteModel)
+
+        # buttons
+        self.note.newButton.clicked.connect(self.note.new)
+        self.note.deleteButton.clicked.connect(self.note.delete)
+        self.note.saveButton.clicked.connect(self.note.save)
+
+        # page list
+        self.note.pageList.setModel(self.note.pageListModel)
+        self.note.pageList.selectionModel().selectionChanged.connect(self.note.changed)
+
+        # menu bar
+        self.note.actionNewPage.triggered.connect(self.note.new)
+        self.note.actionSavePage.triggered.connect(self.note.save)
+        self.note.actionDeletePage.triggered.connect(self.note.delete)
+        self.note.actionCloseNote.triggered.connect(qApp.quit)
 
     def run(self):
-        self.noteBook.show()
+        self.note.show()
 
 
 def main():
     qapp = QApplication([])
-    ctrl = NoteBookController()
+    ctrl = NoteController()
     ctrl.run()
     qapp.exec()
 

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>日記帳</string>
+   <string>ノート</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_5">
@@ -64,34 +64,49 @@
        </item>
        <item row="0" column="4">
         <widget class="QPushButton" name="saveButton">
+         <property name="cursor">
+          <cursorShape>ArrowCursor</cursorShape>
+         </property>
          <property name="text">
-          <string>保存</string>
+          <string>保存(S)</string>
          </property>
          <property name="icon">
           <iconset resource="main.qrc">
            <normaloff>:/icon/assets/icon/maps-and-flags.svg</normaloff>:/icon/assets/icon/maps-and-flags.svg</iconset>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+S</string>
+         </property>
+         <property name="default">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
        <item row="0" column="2">
         <widget class="QPushButton" name="newButton">
          <property name="text">
-          <string>新規作成</string>
+          <string>新規作成(N)</string>
          </property>
          <property name="icon">
           <iconset resource="main.qrc">
            <normaloff>:/icon/assets/icon/new.svg</normaloff>:/icon/assets/icon/new.svg</iconset>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+N</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
         <widget class="QPushButton" name="deleteButton">
          <property name="text">
-          <string>削除</string>
+          <string>削除(D)</string>
          </property>
          <property name="icon">
           <iconset resource="main.qrc">
            <normaloff>:/icon/assets/icon/delete.svg</normaloff>:/icon/assets/icon/delete.svg</iconset>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+D</string>
          </property>
         </widget>
        </item>
@@ -154,7 +169,7 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
-        <widget class="QListView" name="noteList"/>
+        <widget class="QListView" name="pageList"/>
        </item>
       </layout>
       <widget class="QFrame" name="frame">
@@ -196,14 +211,36 @@
     <property name="title">
      <string>ファイル</string>
     </property>
-    <addaction name="actionNew_diary"/>
+    <addaction name="actionNewPage"/>
+    <addaction name="actionSavePage"/>
+    <addaction name="actionDeletePage"/>
+    <addaction name="separator"/>
+    <addaction name="actionCloseNote"/>
    </widget>
    <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionNew_diary">
+  <action name="actionNewPage">
    <property name="text">
-    <string>New</string>
+    <string>New (N)</string>
+   </property>
+  </action>
+  <action name="actionSavePage">
+   <property name="text">
+    <string>Save (S)</string>
+   </property>
+  </action>
+  <action name="actionDeletePage">
+   <property name="text">
+    <string>Delete (D)</string>
+   </property>
+  </action>
+  <action name="actionCloseNote">
+   <property name="text">
+    <string>Close (X)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
    </property>
   </action>
  </widget>
