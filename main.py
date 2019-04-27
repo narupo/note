@@ -140,10 +140,13 @@ class NoteView(QMainWindow):
     def load(self):
         rows = self.pageModel.selectAll()
         rows = sorted(rows, key=lambda row: -int(row['id']))
+        nrows = len(rows)
         for row in rows:
             text = self.pageListModel.parseRow(row)
             item = QStandardItem(text)
             self.pageListModel.appendRow(item)
+
+        self.pageListLabel.setText('ページ数: %d' % nrows)
         self.smsg('load complete')
 
     def new(self):
