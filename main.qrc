@@ -3,6 +3,7 @@
     <file>assets/logo/logo.svg</file>
   </qresource>
   <qresource prefix="icon">
+    <file>assets/icon/note.svg</file>
     <file>assets/icon/moon.svg</file>
     <file>assets/icon/delete.svg</file>
     <file>assets/icon/new.svg</file>

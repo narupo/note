@@ -24,8 +24,8 @@ class PageListModel(QStandardItemModel):
     def parseText(self, text):
         cols = text.split(',')
         if len(cols) != 2:
-            raise ValueError('invalid text format. can not split by comma')
-        return { 'id': cols[0], 'created': cols[1] }
+            return None
+        return { 'id': int(cols[0]), 'created': cols[1] }
 
     def parseRow(self, dict_row):
         return '{id}, {created}'.format(id=dict_row['id'], created=dict_row['created'])
@@ -147,26 +147,33 @@ class NoteView(QMainWindow):
             self.pageListModel.appendRow(item)
 
         self.pageListLabel.setText('ページ数: %d' % nrows)
-        self.smsg('load complete')
+        self.smsg('ロードが完了しました')
 
     def new(self):
+        # 挿入
         row = self.pageModel.create()
         text = self.pageListModel.parseRow(row)
         item = QStandardItem(text)
         self.pageListModel.insertRow(0, item)
+
+        # リストの最初のアイテムをフォーカス
+        modelIndex = self.pageListModel.index(0, 0)
+        self.pageList.setCurrentIndex(modelIndex)
+
+        # エディタを更新
         self.textEdit.setText(row['content'])
         self.titleEdit.setText(text)
         self.showDebug('inserted', dict(row))
-        self.smsg('created new note')
+        self.smsg('新規ページを作成しました')
 
     def delete(self):
         selectionModel = self.pageList.selectionModel()
         indexes = selectionModel.selectedIndexes()
         if not len(indexes):
-            QMessageBox.about(self, '日記が選択されていません', '削除する日記を選択して下さい。')
+            QMessageBox.about(self, 'ページが選択されていません', '削除するページを選択して下さい。')
             return
 
-        reply = QMessageBox.question(self, '削除確認', '本当にこの日記を削除しますか？', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        reply = QMessageBox.question(self, '削除確認', '本当にこのページを削除しますか？', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.No:
             return
 
@@ -177,7 +184,7 @@ class NoteView(QMainWindow):
                 continue
             row = self.pageModel.deleteById(row['id'])
             self.showDebug('deleted', dict(row))
-            self.smsg('deleted page by id "%d"' % (row['id'], ))
+            self.smsg('ページを削除しました（id %d）' % (row['id'], ))
 
         for index in indexes:
             self.pageListModel.removeRow(index.row())
@@ -191,8 +198,8 @@ class NoteView(QMainWindow):
         row['content'] = self.textEdit.toPlainText()
         self.pageModel.update(id=row['id'], content=row['content'])
         self.showDebug('updated', row)
-        self.smsg('updated page by id "%s"' % (row['id'], ))
-        QMessageBox.about(self, '保存結果', '日記の保存に成功しました。')
+        self.smsg('ページを更新しました（id %d）' % (row['id'], ))
+        # QMessageBox.about(self, '保存結果', 'ページの保存に成功しました。')
 
     def changed(self, selected, deselected):
         for index in selected.indexes():
@@ -205,7 +212,13 @@ class NoteView(QMainWindow):
                 continue
             self.textEdit.setText(row['content'])
             self.titleEdit.setText(text)
-            self.smsg('selected page by id "%d"' % (row['id'], ))
+            self.smsg('ページを選択しました（id %d）' % (row['id'], ))
+
+    def quit(self):
+        reply = QMessageBox.question(self, '終了確認', 'ノートを閉じますか？', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.No:
+            return
+        qApp.quit()
 
 
 class NoteController:
@@ -226,7 +239,7 @@ class NoteController:
         self.note.actionNewPage.triggered.connect(self.note.new)
         self.note.actionSavePage.triggered.connect(self.note.save)
         self.note.actionDeletePage.triggered.connect(self.note.delete)
-        self.note.actionCloseNote.triggered.connect(qApp.quit)
+        self.note.actionCloseNote.triggered.connect(self.note.quit)
 
     def run(self):
         self.note.show()
