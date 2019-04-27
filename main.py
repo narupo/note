@@ -178,7 +178,6 @@ class NoteBookView(QMainWindow):
         for index in indexes:
             self.noteListModel.removeRow(index.row())
 
-
     def save(self):
         selectedTitle = self.titleEdit.text()
         row = self.noteListModel.parseText(selectedTitle)
