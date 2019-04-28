@@ -78,7 +78,11 @@ class PageModel:
         self.dbConn.commit()
 
         cursor.execute('''
-            SELECT * FROM page WHERE id = ?
+            SELECT
+                id,
+                DATETIME(created, '+9 hours') AS created,
+                content
+            FROM page WHERE id = ?
         ''', (cursor.lastrowid, ))
         row = cursor.fetchone()
         return row
@@ -86,7 +90,11 @@ class PageModel:
     def deleteById(self, rid):
         cursor = self.dbConn.cursor()
         cursor.execute('''
-            SELECT * FROM page WHERE id = ?
+            SELECT
+                id,
+                DATETIME(created, '+9 hours') AS created,
+                content
+            FROM page WHERE id = ?
         ''', (rid, ))
         row = cursor.fetchone()
 
@@ -100,7 +108,11 @@ class PageModel:
     def selectById(self, rid):
         cursor = self.dbConn.cursor()
         cursor.execute('''
-            SELECT * FROM page WHERE id = ?
+            SELECT
+                id,
+                DATETIME(created, '+9 hours') AS created,
+                content
+            FROM page WHERE id = ?
         ''', (rid, ))
         row = cursor.fetchone()
         return row
@@ -115,7 +127,11 @@ class PageModel:
     def selectAll(self):
         cursor = self.dbConn.cursor()
         cursor.execute('''
-            SELECT * FROM page;
+            SELECT
+                id,
+                DATETIME(created, '+9 hours') AS created,
+                content
+            FROM page;
         ''')
         return cursor.fetchall()
 
@@ -199,7 +215,7 @@ class NoteView(QMainWindow):
         self.pageModel.update(id=row['id'], content=row['content'])
         self.showDebug('updated', row)
         self.smsg('ページを更新しました（id %d）' % (row['id'], ))
-        # QMessageBox.about(self, '保存結果', 'ページの保存に成功しました。')
+        QMessageBox.about(self, '保存結果', 'ページの保存に成功しました。')
 
     def changed(self, selected, deselected):
         for index in selected.indexes():
