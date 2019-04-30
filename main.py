@@ -37,6 +37,8 @@ class PageModel:
 
     def create(self):
         cursor = self.dbConn.cursor()
+
+        # sqlite3's CURRENT_TIMESTAMP create UTC value
         cursor.execute('''
             INSERT INTO page DEFAULT VALUES;
         ''')
