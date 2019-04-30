@@ -31,41 +31,6 @@ class PageListModel(QStandardItemModel):
         return '{id}, {created}'.format(id=dict_row['id'], created=dict_row['created'])
 
 
-class NoteModel:
-    def __init__(self, remove_settings=False):
-        self.remove_settings = remove_settings
-        self.initEnv()
-        self.initDB()
-
-    def initEnv(self):
-        self.homePath = expanduser('~')
-        self.settingDirPath = os.path.join(self.homePath, '.note')
-        
-        if self.remove_settings:
-            shutil.rmtree(self.settingDirPath)
-
-        if not os.path.exists(self.settingDirPath):
-            os.mkdir(self.settingDirPath)
-
-        self.dbPath = os.path.join(self.settingDirPath, 'db.sqlite3')
-        if not os.path.exists(self.dbPath):
-            Path(self.dbPath).touch()
-
-    def initDB(self):
-        self.dbConn = sqlite3.connect(self.dbPath)
-        self.dbConn.row_factory = sqlite3.Row
-
-        cursor = self.dbConn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS page (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                created DATETIME DEFAULT CURRENT_TIMESTAMP,
-                content TEXT NOT NULL DEFAULT "内容なし"
-            );
-        ''')
-        self.dbConn.commit()
-
-
 class PageModel:
     def __init__(self, dbConn):
         self.dbConn = dbConn
@@ -137,14 +102,13 @@ class PageModel:
 
 
 class NoteView(QMainWindow):
-    def __init__(self, noteModel, debug=False):
+    def __init__(self, dbConn, debug=False):
         super().__init__()
         uic.loadUi('main.ui', self)
         self.debug = debug
-        self.pageModel = PageModel(noteModel.dbConn)
+        self.pageModel = PageModel(dbConn)
         self.pageListModel = PageListModel()
         self.load()
-        self.smsg("I'm ready")
 
     def smsg(self, msg):
         self.statusBar().showMessage(msg)
@@ -238,9 +202,14 @@ class NoteView(QMainWindow):
 
 
 class NoteController:
-    def __init__(self):
-        self.noteModel = NoteModel(remove_settings=False)
-        self.note = NoteView(self.noteModel)
+    def __init__(self, remove_settings=False):
+        self.remove_settings = remove_settings
+        self.initEnv()
+        self.initDB()
+        self.bindModelAndView()
+
+    def bindModelAndView(self):
+        self.note = NoteView(self.dbConn)
 
         # buttons
         self.note.newButton.clicked.connect(self.note.new)
@@ -259,6 +228,34 @@ class NoteController:
 
     def run(self):
         self.note.show()
+
+    def initEnv(self):
+        self.homePath = expanduser('~')
+        self.settingDirPath = os.path.join(self.homePath, '.note')
+        
+        if self.remove_settings:
+            shutil.rmtree(self.settingDirPath)
+
+        if not os.path.exists(self.settingDirPath):
+            os.mkdir(self.settingDirPath)
+
+        self.dbPath = os.path.join(self.settingDirPath, 'db.sqlite3')
+        if not os.path.exists(self.dbPath):
+            Path(self.dbPath).touch()
+
+    def initDB(self):
+        self.dbConn = sqlite3.connect(self.dbPath)
+        self.dbConn.row_factory = sqlite3.Row
+
+        cursor = self.dbConn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS page (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                created DATETIME DEFAULT CURRENT_TIMESTAMP,
+                content TEXT NOT NULL DEFAULT "内容なし"
+            );
+        ''')
+        self.dbConn.commit()
 
 
 def main():
