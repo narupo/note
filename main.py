@@ -203,13 +203,9 @@ class NoteView(QMainWindow):
 
 
 class NoteController:
-    def __init__(self, remove_settings=False):
-        self.remove_settings = remove_settings
-        self.initEnv()
-        self.initDB()
-        self.bindModelAndView()
+    def __init__(self, dbConn):
+        self.dbConn = dbConn
 
-    def bindModelAndView(self):
         # NoteView
         self.note = NoteView()
         self.note.pageModel = PageModel(self.dbConn)
@@ -231,8 +227,19 @@ class NoteController:
         self.note.actionDeletePage.triggered.connect(self.note.delete)
         self.note.actionCloseNote.triggered.connect(self.note.quit)
 
-    def run(self):
+    def show(self):
         self.note.show()
+
+
+class Application:
+    def __init__(self, remove_settings=False):
+        self.remove_settings = remove_settings
+        self.initEnv()
+        self.initDB()
+        self.noteCtrl = NoteController(self.dbConn)
+
+    def run(self):
+        self.noteCtrl.show()
 
     def initEnv(self):
         self.homePath = expanduser('~')
@@ -265,8 +272,8 @@ class NoteController:
 
 def main():
     qapp = QApplication([])
-    ctrl = NoteController()
-    ctrl.run()
+    app = Application()
+    app.run()
     qapp.exec()
 
 
