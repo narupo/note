@@ -103,10 +103,10 @@ class PageModel:
         return cursor.fetchall()
 
 
-class NoteView(QMainWindow):
+class PageView(QMainWindow):
     def __init__(self, debug=False):
         super().__init__()
-        uic.loadUi('ui/note.ui', self)
+        uic.loadUi('ui/page.ui', self)
         self.debug = debug
         self.pageModel = None
         self.pageListModel = None
@@ -202,33 +202,33 @@ class NoteView(QMainWindow):
         qApp.quit()
 
 
-class NoteController:
+class PageController:
     def __init__(self, dbConn):
         self.dbConn = dbConn
 
-        # NoteView
-        self.noteView = NoteView()
-        self.noteView.pageModel = PageModel(self.dbConn)
-        self.noteView.pageListModel = PageListModel()
-        self.noteView.load()
+        # PageView
+        self.pageView = PageView()
+        self.pageView.pageModel = PageModel(self.dbConn)
+        self.pageView.pageListModel = PageListModel()
+        self.pageView.load()
 
         # buttons
-        self.noteView.newButton.clicked.connect(self.noteView.new)
-        self.noteView.deleteButton.clicked.connect(self.noteView.delete)
-        self.noteView.saveButton.clicked.connect(self.noteView.save)
+        self.pageView.newButton.clicked.connect(self.pageView.new)
+        self.pageView.deleteButton.clicked.connect(self.pageView.delete)
+        self.pageView.saveButton.clicked.connect(self.pageView.save)
 
         # page list
-        self.noteView.pageList.setModel(self.noteView.pageListModel)
-        self.noteView.pageList.selectionModel().selectionChanged.connect(self.noteView.changed)
+        self.pageView.pageList.setModel(self.pageView.pageListModel)
+        self.pageView.pageList.selectionModel().selectionChanged.connect(self.pageView.changed)
 
         # menu bar
-        self.noteView.actionNewPage.triggered.connect(self.noteView.new)
-        self.noteView.actionSavePage.triggered.connect(self.noteView.save)
-        self.noteView.actionDeletePage.triggered.connect(self.noteView.delete)
-        self.noteView.actionCloseNote.triggered.connect(self.noteView.quit)
+        self.pageView.actionNewPage.triggered.connect(self.pageView.new)
+        self.pageView.actionSavePage.triggered.connect(self.pageView.save)
+        self.pageView.actionDeletePage.triggered.connect(self.pageView.delete)
+        self.pageView.actionCloseNote.triggered.connect(self.pageView.quit)
 
     def show(self):
-        self.noteView.show()
+        self.pageView.show()
 
 
 class Application:
@@ -236,10 +236,10 @@ class Application:
         self.remove_settings = remove_settings
         self.initEnv()
         self.initDB()
-        self.noteCtrl = NoteController(self.dbConn)
+        self.pageCtrl = PageController(self.dbConn)
 
     def run(self):
-        self.noteCtrl.show()
+        self.pageCtrl.show()
 
     def initEnv(self):
         self.homePath = expanduser('~')
