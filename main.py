@@ -104,13 +104,12 @@ class PageModel:
 
 
 class NoteView(QMainWindow):
-    def __init__(self, dbConn, debug=False):
+    def __init__(self, debug=False):
         super().__init__()
-        uic.loadUi('main.ui', self)
+        uic.loadUi('ui/note.ui', self)
         self.debug = debug
-        self.pageModel = PageModel(dbConn)
-        self.pageListModel = PageListModel()
-        self.load()
+        self.pageModel = None
+        self.pageListModel = None
 
     def smsg(self, msg):
         self.statusBar().showMessage(msg)
@@ -211,7 +210,11 @@ class NoteController:
         self.bindModelAndView()
 
     def bindModelAndView(self):
-        self.note = NoteView(self.dbConn)
+        # NoteView
+        self.note = NoteView()
+        self.note.pageModel = PageModel(self.dbConn)
+        self.note.pageListModel = PageListModel()
+        self.note.load()
 
         # buttons
         self.note.newButton.clicked.connect(self.note.new)
