@@ -207,28 +207,28 @@ class NoteController:
         self.dbConn = dbConn
 
         # NoteView
-        self.note = NoteView()
-        self.note.pageModel = PageModel(self.dbConn)
-        self.note.pageListModel = PageListModel()
-        self.note.load()
+        self.noteView = NoteView()
+        self.noteView.pageModel = PageModel(self.dbConn)
+        self.noteView.pageListModel = PageListModel()
+        self.noteView.load()
 
         # buttons
-        self.note.newButton.clicked.connect(self.note.new)
-        self.note.deleteButton.clicked.connect(self.note.delete)
-        self.note.saveButton.clicked.connect(self.note.save)
+        self.noteView.newButton.clicked.connect(self.noteView.new)
+        self.noteView.deleteButton.clicked.connect(self.noteView.delete)
+        self.noteView.saveButton.clicked.connect(self.noteView.save)
 
         # page list
-        self.note.pageList.setModel(self.note.pageListModel)
-        self.note.pageList.selectionModel().selectionChanged.connect(self.note.changed)
+        self.noteView.pageList.setModel(self.noteView.pageListModel)
+        self.noteView.pageList.selectionModel().selectionChanged.connect(self.noteView.changed)
 
         # menu bar
-        self.note.actionNewPage.triggered.connect(self.note.new)
-        self.note.actionSavePage.triggered.connect(self.note.save)
-        self.note.actionDeletePage.triggered.connect(self.note.delete)
-        self.note.actionCloseNote.triggered.connect(self.note.quit)
+        self.noteView.actionNewPage.triggered.connect(self.noteView.new)
+        self.noteView.actionSavePage.triggered.connect(self.noteView.save)
+        self.noteView.actionDeletePage.triggered.connect(self.noteView.delete)
+        self.noteView.actionCloseNote.triggered.connect(self.noteView.quit)
 
     def show(self):
-        self.note.show()
+        self.noteView.show()
 
 
 class Application:
