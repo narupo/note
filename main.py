@@ -205,11 +205,17 @@ class PageView(QMainWindow):
 class PageController:
     def __init__(self, dbConn):
         self.dbConn = dbConn
+        
+        # PageModel
+        self.pageModel = PageModel(self.dbConn)
+
+        # PageListModel
+        self.pageListModel = PageListModel()
 
         # PageView
         self.pageView = PageView()
-        self.pageView.pageModel = PageModel(self.dbConn)
-        self.pageView.pageListModel = PageListModel()
+        self.pageView.pageModel = self.pageModel
+        self.pageView.pageListModel = self.pageListModel
         self.pageView.load()
 
         # buttons
@@ -218,7 +224,7 @@ class PageController:
         self.pageView.saveButton.clicked.connect(self.pageView.save)
 
         # page list
-        self.pageView.pageList.setModel(self.pageView.pageListModel)
+        self.pageView.pageList.setModel(self.pageListModel)
         self.pageView.pageList.selectionModel().selectionChanged.connect(self.pageView.changed)
 
         # menu bar
