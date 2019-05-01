@@ -4,9 +4,9 @@
   </qresource>
   <qresource prefix="icon">
     <file>assets/icon/note.svg</file>
-    <file>assets/icon/moon.svg</file>
-    <file>assets/icon/delete.svg</file>
     <file>assets/icon/new.svg</file>
+    <file>assets/icon/moon.svg</file>
     <file>assets/icon/maps-and-flags.svg</file>
+    <file>assets/icon/delete.svg</file>
   </qresource>
 </RCC>
