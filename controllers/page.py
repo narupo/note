@@ -34,9 +34,6 @@ class PageController:
         self.pageView.actionDeletePage.triggered.connect(self.pageView.delete)
         self.pageView.actionCloseNote.triggered.connect(self.pageView.quit)
 
-    def show(self):
-        self.pageView.show()
-
     def open(self, note_id):
         self.pageView.note_id = note_id
         self.pageView.load()

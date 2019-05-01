@@ -43,6 +43,9 @@ class NoteModel:
     def deleteById(self, id):
         cursor = self.dbConn.cursor()
         cursor.execute('''
+            DELETE FROM page WHERE note_id = ?;
+        ''', (id, ))
+        cursor.execute('''
             DELETE FROM note WHERE id = ?;
         ''', (id, ))
         self.dbConn.commit()
