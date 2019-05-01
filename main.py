@@ -8,6 +8,7 @@ import sqlite3
 import shutil
 import ui.resources
 from controllers.page import PageController
+from controllers.note import NoteController
 
 
 class Application:
@@ -15,10 +16,15 @@ class Application:
         self.remove_settings = remove_settings
         self.initEnv()
         self.initDB()
+        self.initCtrls()
+
+    def initCtrls(self):
         self.pageCtrl = PageController(self.dbConn)
+        self.noteCtrl = NoteController(self.dbConn)
+        self.noteCtrl.pageCtrl = self.pageCtrl
 
     def run(self):
-        self.pageCtrl.show()
+        self.noteCtrl.show()
 
     def initEnv(self):
         self.homePath = expanduser('~')
@@ -40,10 +46,22 @@ class Application:
 
         cursor = self.dbConn.cursor()
         cursor.execute('''
+            PRAGMA foreign_keys = ON;
+        ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS note (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                created DATETIME DEFAULT CURRENT_TIMESTAMP,
+                title VARCHAR(255) NOT NULL DEFAULT ""
+            );
+        ''')
+        cursor.execute('''
             CREATE TABLE IF NOT EXISTS page (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 created DATETIME DEFAULT CURRENT_TIMESTAMP,
-                content TEXT NOT NULL DEFAULT "内容なし"
+                content TEXT NOT NULL DEFAULT "内容なし",
+                note_id INTEGER NOT NULL,
+                FOREIGN KEY (note_id) REFERENCES note(id)
             );
         ''')
         self.dbConn.commit()
@@ -51,7 +69,7 @@ class Application:
 
 def main():
     qapp = QApplication([])
-    app = Application()
+    app = Application(remove_settings=False)
     app.run()
     qapp.exec()
 

@@ -7,7 +7,6 @@ from PyQt5.QtGui import (
     QStandardItem,
 )
 from PyQt5 import uic
-import ui.resources
 
 
 class PageView(QMainWindow):
@@ -15,8 +14,10 @@ class PageView(QMainWindow):
         super().__init__()
         uic.loadUi('ui/page.ui', self)
         self.debug = debug
+        self.note_id = None
         self.pageModel = None
         self.pageListModel = None
+        self.noteModel = None
 
     def smsg(self, msg):
         self.statusBar().showMessage(msg)
@@ -26,20 +27,40 @@ class PageView(QMainWindow):
             print(*args, **kwargs)
 
     def load(self):
-        rows = self.pageModel.selectAll()
+        if self.note_id is None:
+            self.showDebug('can not load. note id is null')
+            return
+
+        # init list
+        rows = self.pageModel.selectAllByNoteId(self.note_id)
         rows = sorted(rows, key=lambda row: -int(row['id']))
         nrows = len(rows)
+        self.pageListModel.clear()
         for row in rows:
             text = self.pageListModel.parseRow(row)
             item = QStandardItem(text)
             self.pageListModel.appendRow(item)
 
         self.pageListLabel.setText('ページ数: %d' % nrows)
+
+        # set note title
+        note_row = self.noteModel.selectById(self.note_id)
+        self.noteTitleLabel.setText(note_row['title'])
+
+        # clear input 
+        self.textEdit.setText('')
+        self.titleEdit.setText('')
+
+        # done
         self.smsg('ロードが完了しました')
 
     def new(self):
+        if self.note_id is None:
+            self.showDebug('can not new. note id is null')
+            return
+
         # 挿入
-        row = self.pageModel.create()
+        row = self.pageModel.create(self.note_id)
         text = self.pageListModel.parseRow(row)
         item = QStandardItem(text)
         self.pageListModel.insertRow(0, item)

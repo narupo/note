@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>758</width>
+    <width>726</width>
     <height>614</height>
    </rect>
   </property>
@@ -16,10 +16,48 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_4">
     <item row="0" column="0">
+     <widget class="QFrame" name="frame_2">
+      <property name="font">
+       <font>
+        <family>MS Serif</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <italic>true</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="titleLabel">
+         <property name="font">
+          <font>
+           <family>メイリオ</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>ノート一覧</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
      <widget class="QFrame" name="frame">
       <property name="maximumSize">
        <size>
-        <width>200</width>
+        <width>16777215</width>
         <height>16777215</height>
        </size>
       </property>
@@ -31,212 +69,64 @@
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
-        <widget class="QTableView" name="tableView"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="listInfoLabel">
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
+        <widget class="QTableView" name="noteTable"/>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QFrame" name="frame_2">
+    <item row="2" column="0">
+     <widget class="QFrame" name="frame_3">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QGridLayout" name="gridLayout_7">
+      <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="QFrame" name="frame_4">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="idLabel">
-            <property name="maximumSize">
-             <size>
-              <width>40</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>ID:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="idValueLabel">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>100</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>id</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QFrame" name="frame_6">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="0">
-           <widget class="QLabel" name="createdLabel">
-            <property name="maximumSize">
-             <size>
-              <width>40</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>作成日:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="createdValueLabel">
-            <property name="text">
-             <string>created</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QFrame" name="frame_7">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0">
-           <widget class="QLabel" name="titleLabel">
-            <property name="maximumSize">
-             <size>
-              <width>50</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>タイトル:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="titleEdit">
-            <property name="maximumSize">
-             <size>
-              <width>10000000</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <spacer name="verticalSpacer">
+        <spacer name="horizontalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>20</width>
-           <height>40</height>
+           <width>40</width>
+           <height>20</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="4" column="0">
-        <widget class="QFrame" name="frame_3">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="deleteButton">
+         <property name="text">
+          <string>削除 (D)</string>
          </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icon/assets/icon/delete.svg</normaloff>:/icon/assets/icon/delete.svg</iconset>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="3">
-           <widget class="QPushButton" name="saveButton">
-            <property name="text">
-             <string>保存 (S)</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/icon/assets/icon/maps-and-flags.svg</normaloff>:/icon/assets/icon/maps-and-flags.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="deleteButton">
-            <property name="text">
-             <string>削除 (D)</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/icon/assets/icon/delete.svg</normaloff>:/icon/assets/icon/delete.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="newButton">
-            <property name="text">
-             <string>新規作成 (N)</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/icon/assets/icon/new.svg</normaloff>:/icon/assets/icon/new.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <widget class="QPushButton" name="pushButton">
-            <property name="text">
-             <string>開く (O)</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/icon/assets/icon/note.svg</normaloff>:/icon/assets/icon/note.svg</iconset>
-            </property>
-           </widget>
-          </item>
-         </layout>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="newButton">
+         <property name="text">
+          <string>新規作成 (N)</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icon/assets/icon/new.svg</normaloff>:/icon/assets/icon/new.svg</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="openButton">
+         <property name="text">
+          <string>開く (O)</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icon/assets/icon/note.svg</normaloff>:/icon/assets/icon/note.svg</iconset>
+         </property>
         </widget>
        </item>
       </layout>
@@ -249,7 +139,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>758</width>
+     <width>726</width>
      <height>21</height>
     </rect>
    </property>
@@ -257,16 +147,16 @@
     <property name="title">
      <string>ファイル</string>
     </property>
-    <addaction name="actionCreate_new_note"/>
-    <addaction name="actionSave_note"/>
-    <addaction name="actionDelete_note_D"/>
+    <addaction name="actionNewNote"/>
+    <addaction name="actionDeleteNote"/>
+    <addaction name="actionOpenNote"/>
     <addaction name="separator"/>
-    <addaction name="actionClose_window_X"/>
+    <addaction name="actionCloseWindow"/>
    </widget>
    <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionCreate_new_note">
+  <action name="actionNewNote">
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/icon/assets/icon/new.svg</normaloff>:/icon/assets/icon/new.svg</iconset>
@@ -275,7 +165,7 @@
     <string>Create new note (N)</string>
    </property>
   </action>
-  <action name="actionSave_note">
+  <action name="actionSaveNote">
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/icon/assets/icon/maps-and-flags.svg</normaloff>:/icon/assets/icon/maps-and-flags.svg</iconset>
@@ -284,7 +174,7 @@
     <string>Save note (S)</string>
    </property>
   </action>
-  <action name="actionDelete_note_D">
+  <action name="actionDeleteNote">
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/icon/assets/icon/delete.svg</normaloff>:/icon/assets/icon/delete.svg</iconset>
@@ -293,13 +183,22 @@
     <string>Delete note (D)</string>
    </property>
   </action>
-  <action name="actionClose_window_X">
+  <action name="actionCloseWindow">
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/icon/assets/icon/moon.svg</normaloff>:/icon/assets/icon/moon.svg</iconset>
    </property>
    <property name="text">
     <string>Close window (X)</string>
+   </property>
+  </action>
+  <action name="actionOpenNote">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icon/assets/icon/note.svg</normaloff>:/icon/assets/icon/note.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open note</string>
    </property>
   </action>
  </widget>

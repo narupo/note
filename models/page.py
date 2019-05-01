@@ -2,24 +2,25 @@ class PageModel:
     def __init__(self, dbConn):
         self.dbConn = dbConn
 
-    def create(self):
+    def create(self, note_id):
         cursor = self.dbConn.cursor()
 
         # sqlite3's CURRENT_TIMESTAMP create UTC value
         cursor.execute('''
-            INSERT INTO page DEFAULT VALUES;
-        ''')
+            INSERT INTO page (note_id) VALUES (?);
+        ''', (note_id, ))
         self.dbConn.commit()
 
         cursor.execute('''
             SELECT
                 id,
                 DATETIME(created, '+9 hours') AS created,
-                content
+                content,
+                note_id
             FROM page WHERE id = ?
         ''', (cursor.lastrowid, ))
-        row = cursor.fetchone()
-        return row
+
+        return cursor.fetchone()
 
     def deleteById(self, rid):
         cursor = self.dbConn.cursor()
@@ -27,7 +28,8 @@ class PageModel:
             SELECT
                 id,
                 DATETIME(created, '+9 hours') AS created,
-                content
+                content,
+                note_id
             FROM page WHERE id = ?
         ''', (rid, ))
         row = cursor.fetchone()
@@ -45,7 +47,8 @@ class PageModel:
             SELECT
                 id,
                 DATETIME(created, '+9 hours') AS created,
-                content
+                content,
+                note_id
             FROM page WHERE id = ?
         ''', (rid, ))
         row = cursor.fetchone()
@@ -58,13 +61,15 @@ class PageModel:
         ''', (content, id, ))
         self.dbConn.commit()
 
-    def selectAll(self):
+    def selectAllByNoteId(self, note_id):
         cursor = self.dbConn.cursor()
         cursor.execute('''
             SELECT
                 id,
                 DATETIME(created, '+9 hours') AS created,
-                content
-            FROM page;
-        ''')
+                content,
+                note_id
+            FROM page
+            WHERE note_id = ?;
+        ''', (note_id, ))
         return cursor.fetchall()
